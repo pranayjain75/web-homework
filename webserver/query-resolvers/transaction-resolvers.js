@@ -1,5 +1,7 @@
 const { TransactionModel } = require('../data-models/Transaction')
 const { packageModel } = require('./utils.js')
+const Users = require('./user-resolvers.js')
+
 
 async function find(criteria) {
   const query = Object.keys(criteria).length
@@ -11,6 +13,7 @@ async function find(criteria) {
   return packageModel(transactions)
 }
 
+
 async function findOne(id) {
   const query = TransactionModel.findById(id)
   const transaction = await query.exec()
@@ -18,7 +21,16 @@ async function findOne(id) {
   return packageModel(transaction)[0] || null
 }
 
+async function filter(min, max) {
+  const query = TransactionModel.find({ "amount": { $gt: min, $lt: max } });
+  const transactions = await query.exec()
+  console.log(packageModel(transactions))
+  return packageModel(transactions)
+}
+
 module.exports = {
   find,
-  findOne
+  findOne,
+  filter,
+
 }
